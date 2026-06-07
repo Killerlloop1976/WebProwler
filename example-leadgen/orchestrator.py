@@ -64,8 +64,8 @@ RULES_PATH = VOICE / "rules.md"
 # comfortably covers your scan window (e.g. 72h). Sub names must match the
 # `subreddit_buckets` keys (lowercased) in scoring.yml.
 SUBS: list[tuple[str, int]] = [
-    # ("YourTargetSubreddit", 1),
-    # ("AnotherSub", 2),
+    ("MachineLearning", 1),
+    ("LocalLLaMA", 1),
 ]
 
 
@@ -252,14 +252,11 @@ class Scorer:
         )
 
 
-def _wb_contains(text: str, alias: str) -> bool:
-    """Substring match with word boundaries when feasible."""
-    if not alias:
+def _wb_contains(text: str, word: str) -> bool:
+    """Return True if word appears in text with word boundaries."""
+    if not word:
         return False
-    # If alias has special chars or short — fall back to bare substring
-    if len(alias) <= 3 or not all(c.isalnum() or c in "- " for c in alias):
-        return alias in text
-    pat = r"\b" + re.escape(alias) + r"\b"
+    pat = r"(?<![a-z])" + re.escape(word) + r"(?![a-z])"
     return bool(re.search(pat, text))
 
 
